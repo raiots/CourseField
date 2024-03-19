@@ -1,0 +1,29 @@
+{% extends 'courses/base.html' %}
+{% block content %}
+<div class="container px-4">
+<h2 class="text-2xl font-bold">{{ lesson.title }}</h2>
+    <div class="flex justify-center">
+        <div class="w-5/6">
+                <video id="player" playsinline controls >
+                  <source src="{{ lesson.media.url }}" type="video/mp4" />
+                </video>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script>
+const player = new Plyr('#player');
+// print current time on play every 10 seconds 
+setInterval(() => {
+    console.log('Current time:', player.currentTime);
+}, 10000);
+player.on('pause', event => {
+    console.log('Video paused', player.currentTime);
+});
+</script>
+{% endblock %}
