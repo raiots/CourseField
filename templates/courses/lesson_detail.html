@@ -18,10 +18,54 @@
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 <script>
 const player = new Plyr('#player');
+player.currentTime = {{ play_time }};
+console.log('Current time:', player.currentTime);
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+let csrftoken = getCookie('csrftoken');
+
+let url = '{{ lesson.get_absolute_url }}';
+
+function postData(url = '', data = {}) {
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json());
+}
+
 // print current time on play every 10 seconds 
 setInterval(() => {
     console.log('Current time:', player.currentTime);
+    let data = {
+        user: '{{ request.user.id }}',
+        lesson: '{{ lesson.id }}',
+        time: player.currentTime};
+    
+    postData(url, data)
+        .then(data => {
+            console.log(data);
+        });
 }, 10000);
+
 player.on('pause', event => {
     console.log('Video paused', player.currentTime);
 });

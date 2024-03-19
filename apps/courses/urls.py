@@ -10,7 +10,7 @@ app_name = 'courses'
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('course/<int:pk>/', views.CourseDetailView.as_view(), name='course-detail'),
-    path('course/<int:pk>/lesson/<int:lesson_pk>/', views.LessonDetailView.as_view(), name='lesson-detail'),
+    path('course/<int:course_pk>/lesson/<int:lesson_pk>/', views.LessonDetailView.as_view(), name='lesson-detail'),
 
 ]
 

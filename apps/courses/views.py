@@ -1,6 +1,11 @@
+import json
+
+from django.http import HttpResponse, JsonResponse
+
 from django.shortcuts import render
 from django.views import View
 from apps.courses.models import Course, Lesson
+from apps.users.models import User, PlayHistory
 
 
 # Create your views here.
@@ -24,7 +29,27 @@ class CourseDetailView(View):
 
 
 class LessonDetailView(View):
-    def get(self, request, pk, lesson_pk):
+    def get(self, request, course_pk, lesson_pk):
         lesson = Lesson.objects.get(pk=lesson_pk)
-        context = {'lesson': lesson}
+        play_history = PlayHistory.objects.filter(lesson=lesson, user=request.user).first()
+        if play_history:
+            play_time = play_history.time
+        else:
+            play_time = 0
+        print(play_time)
+
+        context = {'lesson': lesson, 'play_time': play_time}
         return render(request, 'courses/lesson_detail.html', context)
+
+    def post(self, request, course_pk, lesson_pk):
+        # print the post data
+        print(json.loads(request.body))
+        play_time = json.loads(request.body)['time']
+
+        PlayHistory.objects.update_or_create(
+            lesson=Lesson.objects.get(pk=lesson_pk),
+            user=User.objects.get(id=request.user.id),
+            defaults={'time': play_time}
+        )
+
+        return JsonResponse({'status': 'ok'}, status=200)
