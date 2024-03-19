@@ -35,6 +35,17 @@ def create_lesson_cover(media_path):
 
 
 def add_lesson(course):
+    """
+    This function is used to add lessons to a given course. It searches for media files in the course directory and
+    creates a new lesson for each media file found. If a lesson with the same media file already exists in the database,
+    it skips the creation of that lesson.
+
+    Parameters:
+    course (Course): The course object to which the lessons will be added.
+
+    Returns:
+    None
+    """
     file_types = ('*.mp4', '*.avi', '*.mkv', '*.flv')
     media_files = []
     for ext in file_types:
@@ -61,6 +72,7 @@ def get_course_media():
     # compare the existing courses with the content, if the course is not in the database, add it
     for course_path in content:
         if course_path not in existing_courses_path:
+
             course_title = Path(course_path).name
             Course.objects.create(title=course_title, description=course_title, instructor=course_title,
                                   course_path=course_path)

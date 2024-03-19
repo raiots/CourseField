@@ -17,6 +17,8 @@ class IndexView(View):
 class CourseDetailView(View):
     def get(self, request, pk):
         course = Course.objects.get(pk=pk)
+        from .auto_importer import add_lesson
+        add_lesson(course)
         context = {'lesson_list': course.lesson_set.all(), 'course': course}
         return render(request, 'courses/course_detail.html', context)
 
