@@ -50,17 +50,19 @@ def add_lesson(course):
     media_files = []
     for ext in file_types:
         media_files.extend(glob.glob(course.course_path + '/**/' + ext, recursive=True))
-    for i in range(len(media_files)):
 
-        # check if the lesson is already in the database
-        if Lesson.objects.filter(course=course, media=media_files[i]).exists():
-            print('Lesson already exists in the database')
-            continue
-        lesson_title = Path(media_files[i]).name.strip(Path(media_files[i]).suffix)
-        total_time = get_duration_from_ffmpeg(media_files[i])
-        cover = create_lesson_cover(media_files[i])
-        Lesson.objects.create(title=lesson_title, description=lesson_title, course=course, index_num=i + 1, cover=cover,
-                              total_time=total_time, media=media_files[i])
+    if media_files:
+        for i in range(len(media_files)):
+
+            # check if the lesson is already in the database
+            if Lesson.objects.filter(course=course, media=media_files[i]).exists():
+                print('Lesson already exists in the database')
+                continue
+            lesson_title = Path(media_files[i]).name.strip(Path(media_files[i]).suffix)
+            total_time = get_duration_from_ffmpeg(media_files[i])
+            cover = create_lesson_cover(media_files[i])
+            Lesson.objects.create(title=lesson_title, description=lesson_title, course=course, index_num=i + 1, cover=cover,
+                                  total_time=total_time, media=media_files[i])
 
 
 def get_course_media():
