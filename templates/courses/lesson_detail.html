@@ -1,4 +1,7 @@
 {% extends 'courses/base.html' %}
+
+{% block head_title %}- {{ lesson.title }}{% endblock %}
+
 {% block content %}
 <div class="container px-4">
 <h2 class="text-2xl font-bold">{{ lesson.title }}</h2>
@@ -18,8 +21,12 @@
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 <script>
 const player = new Plyr('#player');
-player.currentTime = {{ play_time }};
-console.log('Current time:', player.currentTime);
+
+window.onload = function() {
+    
+    player.currentTime = {{ play_time }};
+    console.log('Current time:', player.currentTime);
+}
 
 function getCookie(name) {
     let cookieValue = null;
